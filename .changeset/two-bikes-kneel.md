@@ -1,9 +1,7 @@
 ---
-'@tanstack/ai-anthropic': minor
-'@tanstack/ai-gemini': minor
-'@tanstack/ai-ollama': minor
-'@tanstack/ai-openai': minor
 '@tanstack/ai': minor
 ---
 
-Split up adapters for better tree shaking into separate functionalities
+feat: add experimental agentLoop for agentic text generation
+
+Introduces `agentLoop`, which orchestrates agentic text generation by wrapping `text()` with automatic tool execution and looping. Supports tool calls, approval flows, client tools, and configurable loop strategies.
