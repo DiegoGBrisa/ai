@@ -1,9 +1,5 @@
 import type { AnyTextAdapter } from '../src/activities/chat/adapter'
-import type {
-  StreamChunk,
-  TextMessageContentEvent,
-  Tool,
-} from '../src/types'
+import type { StreamChunk, TextMessageContentEvent, Tool } from '../src/types'
 
 // ============================================================================
 // Chunk factory
@@ -141,9 +137,7 @@ export async function collectChunks(
 // ============================================================================
 
 /** Type guard for TEXT_MESSAGE_CONTENT chunks. */
-export function isTextContent(
-  c: StreamChunk,
-): c is TextMessageContentEvent {
+export function isTextContent(c: StreamChunk): c is TextMessageContentEvent {
   return c.type === 'TEXT_MESSAGE_CONTENT'
 }
 

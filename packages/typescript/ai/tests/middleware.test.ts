@@ -308,7 +308,10 @@ describe('chat() middleware', () => {
       const middleware: ChatMiddleware = {
         name: 'dropper',
         onChunk: (_ctx, chunk) => {
-          if (chunk.type === 'TEXT_MESSAGE_CONTENT' && chunk.delta === 'Hello') {
+          if (
+            chunk.type === 'TEXT_MESSAGE_CONTENT' &&
+            chunk.delta === 'Hello'
+          ) {
             return null
           }
           return undefined
@@ -571,9 +574,7 @@ describe('chat() middleware', () => {
         role: string
         content?: unknown
       }>
-      const toolResultMsg = secondCallMessages.find(
-        (m) => m.role === 'tool',
-      )
+      const toolResultMsg = secondCallMessages.find((m) => m.role === 'tool')
       expect(toolResultMsg).toBeDefined()
     })
 
@@ -1027,7 +1028,11 @@ describe('chat() middleware', () => {
             ev.toolEnd('tc-1', 'failTool', { input: {} }),
             ev.runFinished('tool_calls'),
           ],
-          [ev.runStarted(), ev.textContent('recovered'), ev.runFinished('stop')],
+          [
+            ev.runStarted(),
+            ev.textContent('recovered'),
+            ev.runFinished('stop'),
+          ],
         ],
       })
 
@@ -1941,7 +1946,6 @@ describe('chat() middleware', () => {
       expect(onUsage).not.toHaveBeenCalled()
     })
   })
-
 
   // ==========================================================================
   // All hooks from a single middleware object

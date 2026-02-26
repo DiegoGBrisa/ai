@@ -357,10 +357,7 @@ class TextEngine<
       }
 
       do {
-        if (
-          this.earlyTermination ||
-          this.isCancelled()
-        ) {
+        if (this.earlyTermination || this.isCancelled()) {
           return
         }
 

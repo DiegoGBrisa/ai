@@ -368,9 +368,7 @@ async function applyBeforeToolCallDecision(
     return { proceed: false }
   }
 
-  
   return { proceed: true, input: decision.args }
-   
 }
 
 /**

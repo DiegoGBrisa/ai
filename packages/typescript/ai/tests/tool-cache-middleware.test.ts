@@ -1,14 +1,12 @@
 import { describe, expect, it, vi } from 'vitest'
 import { chat } from '../src/activities/chat/index'
 import { toolCacheMiddleware } from '../src/activities/chat/middleware/tool-cache-middleware'
-import type { ToolCacheEntry, ToolCacheStorage } from '../src/activities/chat/middleware/tool-cache-middleware'
+import type {
+  ToolCacheEntry,
+  ToolCacheStorage,
+} from '../src/activities/chat/middleware/tool-cache-middleware'
 import type { StreamChunk } from '../src/types'
-import {
-  ev,
-  createMockAdapter,
-  collectChunks,
-  serverTool,
-} from './test-utils'
+import { ev, createMockAdapter, collectChunks, serverTool } from './test-utils'
 
 // ============================================================================
 // Tests
@@ -188,7 +186,9 @@ describe('toolCacheMiddleware', () => {
       // Manually simulate the cache flow with controlled time
       // First tool call: cache miss, execute, store
       const beforeResult1 = await cacheMiddleware.onBeforeToolCall!(
-        {} as Parameters<NonNullable<typeof cacheMiddleware.onBeforeToolCall>>[0],
+        {} as Parameters<
+          NonNullable<typeof cacheMiddleware.onBeforeToolCall>
+        >[0],
         {
           toolCall: {
             id: 'tc-1',
@@ -205,7 +205,9 @@ describe('toolCacheMiddleware', () => {
 
       // Simulate successful execution and store result
       await cacheMiddleware.onAfterToolCall!(
-        {} as Parameters<NonNullable<typeof cacheMiddleware.onAfterToolCall>>[0],
+        {} as Parameters<
+          NonNullable<typeof cacheMiddleware.onAfterToolCall>
+        >[0],
         {
           toolCall: {
             id: 'tc-1',
@@ -222,7 +224,9 @@ describe('toolCacheMiddleware', () => {
 
       // Second call immediately — should hit cache
       const beforeResult2 = await cacheMiddleware.onBeforeToolCall!(
-        {} as Parameters<NonNullable<typeof cacheMiddleware.onBeforeToolCall>>[0],
+        {} as Parameters<
+          NonNullable<typeof cacheMiddleware.onBeforeToolCall>
+        >[0],
         {
           toolCall: {
             id: 'tc-2',
@@ -241,7 +245,9 @@ describe('toolCacheMiddleware', () => {
 
       // Third call after TTL — should miss cache
       const beforeResult3 = await cacheMiddleware.onBeforeToolCall!(
-        {} as Parameters<NonNullable<typeof cacheMiddleware.onBeforeToolCall>>[0],
+        {} as Parameters<
+          NonNullable<typeof cacheMiddleware.onBeforeToolCall>
+        >[0],
         {
           toolCall: {
             id: 'tc-3',
