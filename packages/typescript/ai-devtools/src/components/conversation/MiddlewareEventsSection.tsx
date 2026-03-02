@@ -17,10 +17,7 @@ export const MiddlewareEventsSection: Component<
     if (event.wasDropped) return 'DROP'
     if (event.hookName === 'onChunk' && event.hasTransform) return 'TRANSFORM'
     if (event.hookName === 'onConfig' && event.hasTransform) return 'TRANSFORM'
-    if (
-      event.hookName === 'onBeforeToolCall' &&
-      event.hasTransform
-    )
+    if (event.hookName === 'onBeforeToolCall' && event.hasTransform)
       return 'DECISION'
     return null
   }

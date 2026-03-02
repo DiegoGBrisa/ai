@@ -140,10 +140,7 @@ export const ConversationDetails: Component = () => {
                 <MessagesTab messages={conv().messages} />
               </Show>
               <Show when={activeTab() === 'chunks'}>
-                <ChunksTab
-                  chunks={conv().chunks}
-                  messages={conv().messages}
-                />
+                <ChunksTab chunks={conv().chunks} messages={conv().messages} />
               </Show>
               <Show when={activeTab() === 'summaries'}>
                 <SummariesTab summaries={conv().summaries ?? []} />

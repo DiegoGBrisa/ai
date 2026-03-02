@@ -571,7 +571,11 @@ export const AIProvider: ParentComponent = (props) => {
       completion += v.completionTokens
     }
     updateConversation(conversationId, {
-      usage: { promptTokens: prompt, completionTokens: completion, totalTokens: prompt + completion },
+      usage: {
+        promptTokens: prompt,
+        completionTokens: completion,
+        totalTokens: prompt + completion,
+      },
     })
   }
 
@@ -746,8 +750,15 @@ export const AIProvider: ParentComponent = (props) => {
 
     cleanupFns.push(
       aiEventClient.on('text:message:created', (e) => {
-        const { clientId, streamId, messageId, role, content, timestamp, requestId } =
-          e.payload
+        const {
+          clientId,
+          streamId,
+          messageId,
+          role,
+          content,
+          timestamp,
+          requestId,
+        } = e.payload
         const conversationId =
           clientId ||
           (streamId ? streamToConversation.get(streamId) : undefined)
@@ -903,7 +914,8 @@ export const AIProvider: ParentComponent = (props) => {
 
     cleanupFns.push(
       aiEventClient.on('text:message:user', (e) => {
-        const { clientId, streamId, messageId, content, timestamp, requestId } = e.payload
+        const { clientId, streamId, messageId, content, timestamp, requestId } =
+          e.payload
         const conversationId =
           clientId ||
           (streamId ? streamToConversation.get(streamId) : undefined)
@@ -1460,7 +1472,11 @@ export const AIProvider: ParentComponent = (props) => {
         }
 
         if (e.payload.usage) {
-          updateConversationUsage(conversationId, e.payload.requestId, e.payload.usage)
+          updateConversationUsage(
+            conversationId,
+            e.payload.requestId,
+            e.payload.usage,
+          )
           updateMessageUsage(
             conversationId,
             e.payload.messageId,
@@ -1495,8 +1511,7 @@ export const AIProvider: ParentComponent = (props) => {
                 iter &&
                 !iter.completedAt &&
                 msgId &&
-                (iter.messageId === msgId ||
-                  iter.messageIds?.includes(msgId))
+                (iter.messageId === msgId || iter.messageIds?.includes(msgId))
               ) {
                 const iterIdx = i
                 setState(
@@ -1508,8 +1523,7 @@ export const AIProvider: ParentComponent = (props) => {
                     it.completedAt = e.payload.timestamp
                     if (!it.finishReason)
                       it.finishReason = e.payload.finishReason || undefined
-                    if (e.payload.usage && !it.usage)
-                      it.usage = e.payload.usage
+                    if (e.payload.usage && !it.usage) it.usage = e.payload.usage
                   }),
                 )
                 break
@@ -1561,8 +1575,12 @@ export const AIProvider: ParentComponent = (props) => {
             const iter = convForError.iterations[i]
             if (iter && !iter.completedAt) {
               // Scope to matching requestId or messageId when available
-              const matchesRequest = !errorRequestId || iter.requestId === errorRequestId
-              const matchesMessage = !errorMsgId || iter.messageId === errorMsgId || iter.messageIds?.includes(errorMsgId)
+              const matchesRequest =
+                !errorRequestId || iter.requestId === errorRequestId
+              const matchesMessage =
+                !errorMsgId ||
+                iter.messageId === errorMsgId ||
+                iter.messageIds?.includes(errorMsgId)
               if (matchesRequest || matchesMessage) {
                 setState(
                   'conversations',
@@ -1750,8 +1768,7 @@ export const AIProvider: ParentComponent = (props) => {
                   produce((it: Iteration) => {
                     it.completedAt = e.payload.timestamp
                     if (!it.finishReason) {
-                      it.finishReason =
-                        e.payload.finishReason || 'stop'
+                      it.finishReason = e.payload.finishReason || 'stop'
                     }
                     if (!it.usage && usage) {
                       it.usage = usage
@@ -1817,9 +1834,7 @@ export const AIProvider: ParentComponent = (props) => {
         if (
           existingConv &&
           existingConv.iterations.some(
-            (it) =>
-              it.index === iteration &&
-              it.requestId === requestId,
+            (it) => it.index === iteration && it.requestId === requestId,
           )
         ) {
           return
