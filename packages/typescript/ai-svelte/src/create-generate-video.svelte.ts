@@ -102,14 +102,15 @@ export interface CreateGenerateVideoReturn<TOutput = VideoGenerateResult> {
  * ```
  */
 export function createGenerateVideo<
-  TOnResult extends
-    | ((result: VideoGenerateResult) => any)
-    | undefined = undefined,
+  TOnResult extends ((result: VideoGenerateResult) => any) | undefined =
+    undefined,
 >(
   options: Omit<CreateGenerateVideoOptions, 'onResult'> & {
     onResult?: TOnResult
   },
-): CreateGenerateVideoReturn<InferGenerationOutput<VideoGenerateResult, TOnResult>> {
+): CreateGenerateVideoReturn<
+  InferGenerationOutput<VideoGenerateResult, TOnResult>
+> {
   type TOutput = InferGenerationOutput<VideoGenerateResult, TOnResult>
   const clientId =
     options.id ||

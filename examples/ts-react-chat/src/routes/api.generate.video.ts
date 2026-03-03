@@ -1,8 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import {
-  streamVideoGeneration,
-  toServerSentEventsResponse,
-} from '@tanstack/ai'
+import { streamVideoGeneration, toServerSentEventsResponse } from '@tanstack/ai'
 import { openaiVideo } from '@tanstack/ai-openai'
 
 export const Route = createFileRoute('/api/generate/video')({

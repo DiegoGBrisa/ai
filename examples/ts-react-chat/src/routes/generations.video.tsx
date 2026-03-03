@@ -6,10 +6,18 @@ import { fetchServerSentEvents } from '@tanstack/ai-client'
 function VideoGenerationPage() {
   const [prompt, setPrompt] = useState('')
 
-  const { generate, result, jobId, videoStatus, isLoading, error, stop, reset } =
-    useGenerateVideo({
-      connection: fetchServerSentEvents('/api/generate/video'),
-    })
+  const {
+    generate,
+    result,
+    jobId,
+    videoStatus,
+    isLoading,
+    error,
+    stop,
+    reset,
+  } = useGenerateVideo({
+    connection: fetchServerSentEvents('/api/generate/video'),
+  })
 
   const handleGenerate = () => {
     if (!prompt.trim()) return

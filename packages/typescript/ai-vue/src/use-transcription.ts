@@ -95,14 +95,15 @@ export interface UseTranscriptionReturn<TOutput = TranscriptionResult> {
  * ```
  */
 export function useTranscription<
-  TOnResult extends
-    | ((result: TranscriptionResult) => any)
-    | undefined = undefined,
+  TOnResult extends ((result: TranscriptionResult) => any) | undefined =
+    undefined,
 >(
   options: Omit<UseTranscriptionOptions, 'onResult'> & {
     onResult?: TOnResult
   },
-): UseTranscriptionReturn<InferGenerationOutput<TranscriptionResult, TOnResult>> {
+): UseTranscriptionReturn<
+  InferGenerationOutput<TranscriptionResult, TOnResult>
+> {
   const { generate, result, isLoading, error, status, stop, reset } =
     useGeneration<TranscriptionGenerateInput, TranscriptionResult, TOnResult>(
       options,

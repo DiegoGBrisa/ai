@@ -97,14 +97,15 @@ export interface CreateGenerateImageReturn<TOutput = ImageGenerationResult> {
  * ```
  */
 export function createGenerateImage<
-  TOnResult extends
-    | ((result: ImageGenerationResult) => any)
-    | undefined = undefined,
+  TOnResult extends ((result: ImageGenerationResult) => any) | undefined =
+    undefined,
 >(
   options: Omit<CreateGenerateImageOptions, 'onResult'> & {
     onResult?: TOnResult
   },
-): CreateGenerateImageReturn<InferGenerationOutput<ImageGenerationResult, TOnResult>> {
+): CreateGenerateImageReturn<
+  InferGenerationOutput<ImageGenerationResult, TOnResult>
+> {
   const gen = createGeneration<
     ImageGenerateInput,
     ImageGenerationResult,

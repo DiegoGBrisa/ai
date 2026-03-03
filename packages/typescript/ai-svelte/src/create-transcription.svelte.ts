@@ -97,14 +97,15 @@ export interface CreateTranscriptionReturn<TOutput = TranscriptionResult> {
  * ```
  */
 export function createTranscription<
-  TOnResult extends
-    | ((result: TranscriptionResult) => any)
-    | undefined = undefined,
+  TOnResult extends ((result: TranscriptionResult) => any) | undefined =
+    undefined,
 >(
   options: Omit<CreateTranscriptionOptions, 'onResult'> & {
     onResult?: TOnResult
   },
-): CreateTranscriptionReturn<InferGenerationOutput<TranscriptionResult, TOnResult>> {
+): CreateTranscriptionReturn<
+  InferGenerationOutput<TranscriptionResult, TOnResult>
+> {
   const gen = createGeneration<
     TranscriptionGenerateInput,
     TranscriptionResult,

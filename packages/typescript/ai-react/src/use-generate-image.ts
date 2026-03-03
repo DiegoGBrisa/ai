@@ -92,9 +92,8 @@ export interface UseGenerateImageReturn<TOutput = ImageGenerationResult> {
  * ```
  */
 export function useGenerateImage<
-  TOnResult extends
-    | ((result: ImageGenerationResult) => any)
-    | undefined = undefined,
+  TOnResult extends ((result: ImageGenerationResult) => any) | undefined =
+    undefined,
 >(
   options: Omit<UseGenerateImageOptions, 'onResult'> & {
     onResult?: TOnResult
@@ -103,9 +102,7 @@ export function useGenerateImage<
   InferGenerationOutput<ImageGenerationResult, TOnResult>
 > {
   const { generate, result, isLoading, error, status, stop, reset } =
-    useGeneration<ImageGenerateInput, ImageGenerationResult, TOnResult>(
-      options,
-    )
+    useGeneration<ImageGenerateInput, ImageGenerationResult, TOnResult>(options)
 
   return {
     generate: generate as (input: ImageGenerateInput) => Promise<void>,

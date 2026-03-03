@@ -92,14 +92,15 @@ export interface CreateSummarizeReturn<TOutput = SummarizationResult> {
  * ```
  */
 export function createSummarize<
-  TOnResult extends
-    | ((result: SummarizationResult) => any)
-    | undefined = undefined,
+  TOnResult extends ((result: SummarizationResult) => any) | undefined =
+    undefined,
 >(
   options: Omit<CreateSummarizeOptions, 'onResult'> & {
     onResult?: TOnResult
   },
-): CreateSummarizeReturn<InferGenerationOutput<SummarizationResult, TOnResult>> {
+): CreateSummarizeReturn<
+  InferGenerationOutput<SummarizationResult, TOnResult>
+> {
   const gen = createGeneration<
     SummarizeGenerateInput,
     SummarizationResult,

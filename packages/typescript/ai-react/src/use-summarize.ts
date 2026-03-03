@@ -89,16 +89,13 @@ export interface UseSummarizeReturn<TOutput = SummarizationResult> {
  * ```
  */
 export function useSummarize<
-  TOnResult extends
-    | ((result: SummarizationResult) => any)
-    | undefined = undefined,
+  TOnResult extends ((result: SummarizationResult) => any) | undefined =
+    undefined,
 >(
   options: Omit<UseSummarizeOptions, 'onResult'> & {
     onResult?: TOnResult
   },
-): UseSummarizeReturn<
-  InferGenerationOutput<SummarizationResult, TOnResult>
-> {
+): UseSummarizeReturn<InferGenerationOutput<SummarizationResult, TOnResult>> {
   const { generate, result, isLoading, error, status, stop, reset } =
     useGeneration<SummarizeGenerateInput, SummarizationResult, TOnResult>(
       options,

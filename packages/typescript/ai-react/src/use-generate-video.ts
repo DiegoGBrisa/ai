@@ -100,9 +100,8 @@ export interface UseGenerateVideoReturn<TOutput = VideoGenerateResult> {
  * ```
  */
 export function useGenerateVideo<
-  TOnResult extends
-    | ((result: VideoGenerateResult) => any)
-    | undefined = undefined,
+  TOnResult extends ((result: VideoGenerateResult) => any) | undefined =
+    undefined,
 >(
   options: Omit<UseGenerateVideoOptions, 'onResult'> & {
     onResult?: TOnResult

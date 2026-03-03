@@ -93,9 +93,7 @@ function ImageGenerationPage() {
               {result.images.map((img, i) => (
                 <img
                   key={i}
-                  src={
-                    img.url || `data:image/png;base64,${img.b64Json}`
-                  }
+                  src={img.url || `data:image/png;base64,${img.b64Json}`}
                   alt={img.revisedPrompt || prompt}
                   className="w-full rounded-lg border border-gray-700"
                 />

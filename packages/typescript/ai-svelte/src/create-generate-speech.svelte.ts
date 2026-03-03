@@ -88,15 +88,15 @@ export interface CreateGenerateSpeechReturn<TOutput = TTSResult> {
  * ```
  */
 export function createGenerateSpeech<
-  TOnResult extends
-    | ((result: TTSResult) => any)
-    | undefined = undefined,
+  TOnResult extends ((result: TTSResult) => any) | undefined = undefined,
 >(
   options: Omit<CreateGenerateSpeechOptions, 'onResult'> & {
     onResult?: TOnResult
   },
 ): CreateGenerateSpeechReturn<InferGenerationOutput<TTSResult, TOnResult>> {
-  const gen = createGeneration<SpeechGenerateInput, TTSResult, TOnResult>(options)
+  const gen = createGeneration<SpeechGenerateInput, TTSResult, TOnResult>(
+    options,
+  )
 
   return {
     get result() {

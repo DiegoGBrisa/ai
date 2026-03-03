@@ -14,12 +14,13 @@ import type { ConnectionAdapter } from './connection-adapters'
  * @template TResult - The raw result type from the generation
  * @template TFn - The onResult callback type (or undefined if not provided)
  */
-export type InferGenerationOutput<TResult, TFn> =
-  TFn extends (result: any) => infer R
-    ? [Exclude<R, null | void | undefined>] extends [never]
-      ? TResult
-      : Exclude<R, null | void | undefined>
-    : TResult
+export type InferGenerationOutput<TResult, TFn> = TFn extends (
+  result: any,
+) => infer R
+  ? [Exclude<R, null | void | undefined>] extends [never]
+    ? TResult
+    : Exclude<R, null | void | undefined>
+  : TResult
 
 // ===========================
 // State
