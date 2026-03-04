@@ -89,7 +89,9 @@ export const IterationTimeline: Component<IterationTimelineProps> = (props) => {
 }
 
 /** Collapsible system prompt with preview */
-export const SystemPromptItem: Component<{ prompt: string; index: number }> = (props) => {
+export const SystemPromptItem: Component<{ prompt: string; index: number }> = (
+  props,
+) => {
   const styles = useStyles()
   const s = () => styles().iterationTimeline
   const [expanded, setExpanded] = createSignal(false)
@@ -175,12 +177,18 @@ const UserMessageGroupCard: Component<{
    * represents the total for that request).
    */
   const totalUsage = createMemo(() => {
-    const maxByRequest = new Map<string, { prompt: number; completion: number }>()
+    const maxByRequest = new Map<
+      string,
+      { prompt: number; completion: number }
+    >()
     for (const it of iters()) {
       if (!it.usage) continue
       const key = it.requestId || '__default__'
       const existing = maxByRequest.get(key)
-      if (!existing || it.usage.totalTokens > existing.prompt + existing.completion) {
+      if (
+        !existing ||
+        it.usage.totalTokens > existing.prompt + existing.completion
+      ) {
         maxByRequest.set(key, {
           prompt: it.usage.promptTokens,
           completion: it.usage.completionTokens,
@@ -194,12 +202,17 @@ const UserMessageGroupCard: Component<{
       completion += v.completion
     }
     if (prompt + completion === 0) return undefined
-    return { promptTokens: prompt, completionTokens: completion, totalTokens: prompt + completion }
+    return {
+      promptTokens: prompt,
+      completionTokens: completion,
+      totalTokens: prompt + completion,
+    }
   })
 
   const isActive = () => iters().some((it) => !it.completedAt)
   const hasError = () => iters().some((it) => it.finishReason === 'error')
-  const allCompleted = () => iters().every((it) => !!it.completedAt) && !hasError()
+  const allCompleted = () =>
+    iters().every((it) => !!it.completedAt) && !hasError()
 
   const groupAccentClass = () => {
     if (isActive()) return s().cardActive
@@ -267,7 +280,8 @@ const UserMessageGroupCard: Component<{
             </Show>
             <Show when={systemPrompts().length > 0}>
               <span class={s().subtitleBadge}>
-                {systemPrompts().length} system prompt{systemPrompts().length === 1 ? '' : 's'}
+                {systemPrompts().length} system prompt
+                {systemPrompts().length === 1 ? '' : 's'}
               </span>
             </Show>
             <Show when={hasModelOptions()}>
@@ -275,13 +289,17 @@ const UserMessageGroupCard: Component<{
             </Show>
             <Show when={middlewareTransformCount() > 0}>
               <span class={s().subtitleBadgeWarn}>
-                {middlewareTransformCount()} middleware transform{middlewareTransformCount() === 1 ? '' : 's'}
+                {middlewareTransformCount()} middleware transform
+                {middlewareTransformCount() === 1 ? '' : 's'}
               </span>
             </Show>
             <Show when={hasExpandableConfig()}>
               <span
                 class={s().subtitleExpandToggle}
-                onClick={(e) => { e.stopPropagation(); setConfigExpanded(!configExpanded()) }}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setConfigExpanded(!configExpanded())
+                }}
               >
                 {configExpanded() ? 'hide config' : 'show config'}
               </span>
@@ -290,22 +308,34 @@ const UserMessageGroupCard: Component<{
         </div>
         <div class={s().cardHeaderBadges}>
           <Show when={iters().length > 0}>
-            <span class={`${s().badge} ${s().badgeDuration}`} title={`${iters().length} ${iters().length === 1 ? 'iteration' : 'iterations'}`}>
+            <span
+              class={`${s().badge} ${s().badgeDuration}`}
+              title={`${iters().length} ${iters().length === 1 ? 'iteration' : 'iterations'}`}
+            >
               🔄 {iters().length}
             </span>
           </Show>
           <Show when={totalToolCalls() > 0}>
-            <span class={`${s().badge} ${s().badgeFinishReasonToolCalls}`} title={`${totalToolCalls()} tool ${totalToolCalls() === 1 ? 'call' : 'calls'}`}>
+            <span
+              class={`${s().badge} ${s().badgeFinishReasonToolCalls}`}
+              title={`${totalToolCalls()} tool ${totalToolCalls() === 1 ? 'call' : 'calls'}`}
+            >
               🔧 {totalToolCalls()}
             </span>
           </Show>
           <Show when={totalDuration()}>
-            <span class={`${s().badge} ${s().badgeDuration}`} title={formatDuration(totalDuration())}>
+            <span
+              class={`${s().badge} ${s().badgeDuration}`}
+              title={formatDuration(totalDuration())}
+            >
               ⏱️ {formatDuration(totalDuration())}
             </span>
           </Show>
           <Show when={totalUsage()}>
-            <span class={`${s().badge} ${s().badgeUsage}`} title={`Prompt: ${totalUsage()!.promptTokens.toLocaleString()} | Completion: ${totalUsage()!.completionTokens.toLocaleString()}`}>
+            <span
+              class={`${s().badge} ${s().badgeUsage}`}
+              title={`Prompt: ${totalUsage()!.promptTokens.toLocaleString()} | Completion: ${totalUsage()!.completionTokens.toLocaleString()}`}
+            >
               🎯 {totalUsage()!.totalTokens.toLocaleString()}
             </span>
           </Show>
@@ -319,7 +349,9 @@ const UserMessageGroupCard: Component<{
       </div>
 
       {/* Expandable config details — sits between header and iterations */}
-      <div class={`${s().configPanelWrapper} ${configExpanded() ? s().configPanelWrapperOpen : ''}`}>
+      <div
+        class={`${s().configPanelWrapper} ${configExpanded() ? s().configPanelWrapperOpen : ''}`}
+      >
         <div class={s().configPanel}>
           <div>
             <Show when={toolNames().length > 0}>
@@ -370,21 +402,21 @@ const UserMessageGroupCard: Component<{
       {/* Iterations list — full width */}
       <div class={`${s().cardBody} ${isOpen() ? s().cardBodyOpen : ''}`}>
         <div class={s().cardBodyInner}>
-        <div class={s().iterList}>
-          <For each={iters()}>
-            {(iteration, index) => (
-              <IterationCard
-                iteration={iteration}
-                previousIteration={
-                  index() > 0 ? iters()[index() - 1] : undefined
-                }
-                messages={props.allMessages}
-                index={index()}
-                isLast={index() === iters().length - 1}
-              />
-            )}
-          </For>
-        </div>
+          <div class={s().iterList}>
+            <For each={iters()}>
+              {(iteration, index) => (
+                <IterationCard
+                  iteration={iteration}
+                  previousIteration={
+                    index() > 0 ? iters()[index() - 1] : undefined
+                  }
+                  messages={props.allMessages}
+                  index={index()}
+                  isLast={index() === iters().length - 1}
+                />
+              )}
+            </For>
+          </div>
         </div>
       </div>
     </div>

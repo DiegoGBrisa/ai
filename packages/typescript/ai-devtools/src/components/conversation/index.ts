@@ -8,5 +8,4 @@ export { SummariesTab } from './SummariesTab'
 export { ActivityEventsTab } from './ActivityEventsTab'
 
 export { IterationTimeline } from './IterationTimeline'
-export { IterationCard } from './IterationCard'
-export { MiddlewareEventsSection } from './MiddlewareEventsSection'
+export { IterationCard } from './IterationCard' 

@@ -73,24 +73,22 @@ export const ConversationHeader: Component<ConversationHeaderProps> = (
           {totalDuration() !== undefined && formatDuration(totalDuration())}
           <Show when={iterationCount() > 0}>
             {totalDuration() !== undefined && ' · '}
-            {iterationCount()} {iterationCount() === 1 ? 'iteration' : 'iterations'}
+            {iterationCount()}{' '}
+            {iterationCount() === 1 ? 'iteration' : 'iterations'}
           </Show>
           <Show when={totalMessages() > 0}>
             {(totalDuration() !== undefined || iterationCount() > 0) && ' · '}
             {totalMessages()} {totalMessages() === 1 ? 'message' : 'messages'}
           </Show>
           <Show when={totalToolCalls() > 0}>
-            {' · '}{totalToolCalls()} tool {totalToolCalls() === 1 ? 'call' : 'calls'}
+            {' · '}
+            {totalToolCalls()} tool {totalToolCalls() === 1 ? 'call' : 'calls'}
           </Show>
         </div>
         <Show when={totalUsage()}>
           <div class={styles().conversationDetails.usageInfo}>
-            <span class={styles().conversationDetails.usageLabel}>
-              Tokens:
-            </span>
-            <span>
-              {totalUsage()?.promptTokens.toLocaleString() || 0} in
-            </span>
+            <span class={styles().conversationDetails.usageLabel}>Tokens:</span>
+            <span>{totalUsage()?.promptTokens.toLocaleString() || 0} in</span>
             <span>·</span>
             <span>
               {totalUsage()?.completionTokens.toLocaleString() || 0} out

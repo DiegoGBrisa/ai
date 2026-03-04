@@ -1,9 +1,22 @@
-import { For, Index, Match, Show, Switch, createMemo, createSignal } from 'solid-js'
+import {
+  For,
+  Index,
+  Match,
+  Show,
+  Switch,
+  createMemo,
+  createSignal,
+} from 'solid-js'
 import { JsonTree } from '@tanstack/devtools-ui'
 import { useStyles } from '../../styles/use-styles'
 import { formatDuration } from '../utils'
 import { SystemPromptItem } from './IterationTimeline'
-import type { Iteration, Message, MiddlewareEvent, ToolCall } from '../../store/ai-store'
+import type {
+  Iteration,
+  Message,
+  MiddlewareEvent,
+  ToolCall,
+} from '../../store/ai-store'
 import type { Component } from 'solid-js'
 
 interface IterationCardProps {
@@ -88,7 +101,9 @@ function tryParseJson(str: string): unknown | null {
 
 // --- Step renderers ---
 
-const MiddlewareStep: Component<{ step: Extract<IterationStep, { kind: 'middleware' }> }> = (props) => {
+const MiddlewareStep: Component<{
+  step: Extract<IterationStep, { kind: 'middleware' }>
+}> = (props) => {
   const styles = useStyles()
   const s = () => styles().iterationTimeline
   const [expanded, setExpanded] = createSignal(false)
@@ -104,17 +119,23 @@ const MiddlewareStep: Component<{ step: Extract<IterationStep, { kind: 'middlewa
     if (ev().wasDropped) return 'DROP'
     if (ev().hookName === 'onChunk' && ev().hasTransform) return 'TRANSFORM'
     if (ev().hookName === 'onConfig' && ev().hasTransform) return 'TRANSFORM'
-    if (ev().hookName === 'onBeforeToolCall' && ev().hasTransform) return 'DECISION'
+    if (ev().hookName === 'onBeforeToolCall' && ev().hasTransform)
+      return 'DECISION'
     return null
   }
 
-  const hasChanges = () => ev().configChanges && Object.keys(ev().configChanges!).length > 0
+  const hasChanges = () =>
+    ev().configChanges && Object.keys(ev().configChanges!).length > 0
 
   return (
     <>
       <div class={s().step}>
-        <span class={`${s().stepPrefix} ${s().stepPrefixMiddleware}`}>Middleware</span>
-        <span class={`${s().mwBadge} ${badgeClass()}`}>{ev().middlewareName}</span>
+        <span class={`${s().stepPrefix} ${s().stepPrefixMiddleware}`}>
+          Middleware
+        </span>
+        <span class={`${s().mwBadge} ${badgeClass()}`}>
+          {ev().middlewareName}
+        </span>
         <span class={s().mwHook}>{ev().hookName}</span>
         <Show when={ev().duration !== undefined}>
           <span class={s().stepDuration}>{ev().duration}ms</span>
@@ -123,7 +144,10 @@ const MiddlewareStep: Component<{ step: Extract<IterationStep, { kind: 'middlewa
           <span class={s().mwSuffix}>{suffix()}</span>
         </Show>
         <Show when={hasChanges()}>
-          <span class={s().stepExpandToggle} onClick={() => setExpanded(!expanded())}>
+          <span
+            class={s().stepExpandToggle}
+            onClick={() => setExpanded(!expanded())}
+          >
             {expanded() ? 'hide changes' : 'show changes'}
           </span>
         </Show>
@@ -141,7 +165,9 @@ const MiddlewareStep: Component<{ step: Extract<IterationStep, { kind: 'middlewa
   )
 }
 
-const ThinkingStep: Component<{ step: Extract<IterationStep, { kind: 'thinking' }> }> = (props) => {
+const ThinkingStep: Component<{
+  step: Extract<IterationStep, { kind: 'thinking' }>
+}> = (props) => {
   const styles = useStyles()
   const s = () => styles().iterationTimeline
   const [expanded, setExpanded] = createSignal(false)
@@ -153,10 +179,15 @@ const ThinkingStep: Component<{ step: Extract<IterationStep, { kind: 'thinking' 
   return (
     <>
       <div class={s().step}>
-        <span class={`${s().stepPrefix} ${s().stepPrefixThinking}`}>Thinking</span>
+        <span class={`${s().stepPrefix} ${s().stepPrefixThinking}`}>
+          Thinking
+        </span>
         <span class={s().stepContent}>{preview() || '(empty)'}</span>
         <Show when={thinkingText().length > 150}>
-          <span class={s().stepExpandToggle} onClick={() => setExpanded(!expanded())}>
+          <span
+            class={s().stepExpandToggle}
+            onClick={() => setExpanded(!expanded())}
+          >
             {expanded() ? 'hide' : 'show full'}
           </span>
         </Show>
@@ -168,7 +199,9 @@ const ThinkingStep: Component<{ step: Extract<IterationStep, { kind: 'thinking' 
   )
 }
 
-const AssistantStep: Component<{ step: Extract<IterationStep, { kind: 'assistant' }> }> = (props) => {
+const AssistantStep: Component<{
+  step: Extract<IterationStep, { kind: 'assistant' }>
+}> = (props) => {
   const styles = useStyles()
   const s = () => styles().iterationTimeline
   const [expanded, setExpanded] = createSignal(false)
@@ -186,12 +219,17 @@ const AssistantStep: Component<{ step: Extract<IterationStep, { kind: 'assistant
   return (
     <>
       <div class={`${s().step} ${isLong() ? s().stepResponseLong : ''}`}>
-        <span class={`${s().stepPrefix} ${s().stepPrefixAssistant}`}>Response</span>
+        <span class={`${s().stepPrefix} ${s().stepPrefixAssistant}`}>
+          Response
+        </span>
         <span class={isLong() ? s().stepContentLong : s().stepContent}>
           {preview() || '(empty)'}
         </span>
         <Show when={contentLength() > 200}>
-          <span class={s().stepExpandToggle} onClick={() => setExpanded(!expanded())}>
+          <span
+            class={s().stepExpandToggle}
+            onClick={() => setExpanded(!expanded())}
+          >
             {expanded() ? 'hide' : 'show full'}
           </span>
         </Show>
@@ -203,7 +241,9 @@ const AssistantStep: Component<{ step: Extract<IterationStep, { kind: 'assistant
   )
 }
 
-const ToolCallStep: Component<{ step: Extract<IterationStep, { kind: 'tool_call' }> }> = (props) => {
+const ToolCallStep: Component<{
+  step: Extract<IterationStep, { kind: 'tool_call' }>
+}> = (props) => {
   const styles = useStyles()
   const s = () => styles().iterationTimeline
   const [argsOpen, setArgsOpen] = createSignal(false)
@@ -227,13 +267,21 @@ const ToolCallStep: Component<{ step: Extract<IterationStep, { kind: 'tool_call'
 
   return (
     <>
-      <div class={s().step} onClick={() => setArgsOpen(!argsOpen())} style={{ cursor: 'pointer' }}>
-        <span class={`${s().stepPrefix} ${s().stepPrefixToolCall}`}>Tool Call</span>
+      <div
+        class={s().step}
+        onClick={() => setArgsOpen(!argsOpen())}
+        style={{ cursor: 'pointer' }}
+      >
+        <span class={`${s().stepPrefix} ${s().stepPrefixToolCall}`}>
+          Tool Call
+        </span>
         <span class={`${s().mwBadge} ${s().mwBadgeToolCall}`}>{tc().name}</span>
         <Show when={tc().duration !== undefined}>
           <span class={s().stepDuration}>{tc().duration}ms</span>
         </Show>
-        <span class={`${s().chevron} ${argsOpen() ? s().chevronOpen : ''}`}>{'\u25B6'}</span>
+        <span class={`${s().chevron} ${argsOpen() ? s().chevronOpen : ''}`}>
+          {'\u25B6'}
+        </span>
       </div>
       <div class={`${s().cardBody} ${argsOpen() ? s().cardBodyOpen : ''}`}>
         <div class={s().cardBodyInner}>
@@ -247,13 +295,23 @@ const ToolCallStep: Component<{ step: Extract<IterationStep, { kind: 'tool_call'
         </div>
       </div>
       <Show when={hasResult()}>
-        <div class={s().step} onClick={() => setResultOpen(!resultOpen())} style={{ cursor: 'pointer' }}>
-          <span class={`${s().stepPrefix} ${s().stepPrefixToolResult}`}>Result</span>
-          <span class={`${s().mwBadge} ${s().mwBadgeToolResult}`}>{tc().name}</span>
+        <div
+          class={s().step}
+          onClick={() => setResultOpen(!resultOpen())}
+          style={{ cursor: 'pointer' }}
+        >
+          <span class={`${s().stepPrefix} ${s().stepPrefixToolResult}`}>
+            Result
+          </span>
+          <span class={`${s().mwBadge} ${s().mwBadgeToolResult}`}>
+            {tc().name}
+          </span>
           <Show when={tc().duration !== undefined}>
             <span class={s().stepDuration}>{tc().duration}ms</span>
           </Show>
-          <span class={`${s().chevron} ${resultOpen() ? s().chevronOpen : ''}`}>{'\u25B6'}</span>
+          <span class={`${s().chevron} ${resultOpen() ? s().chevronOpen : ''}`}>
+            {'\u25B6'}
+          </span>
         </div>
         <div class={`${s().cardBody} ${resultOpen() ? s().cardBodyOpen : ''}`}>
           <div class={s().cardBodyInner}>
@@ -271,7 +329,9 @@ const ToolCallStep: Component<{ step: Extract<IterationStep, { kind: 'tool_call'
   )
 }
 
-const ToolResultStep: Component<{ step: Extract<IterationStep, { kind: 'tool_result' }> }> = (props) => {
+const ToolResultStep: Component<{
+  step: Extract<IterationStep, { kind: 'tool_result' }>
+}> = (props) => {
   const styles = useStyles()
   const s = () => styles().iterationTimeline
   const [isOpen, setIsOpen] = createSignal(false)
@@ -284,9 +344,17 @@ const ToolResultStep: Component<{ step: Extract<IterationStep, { kind: 'tool_res
 
   return (
     <>
-      <div class={s().step} onClick={() => setIsOpen(!isOpen())} style={{ cursor: 'pointer' }}>
-        <span class={`${s().stepPrefix} ${s().stepPrefixToolResult}`}>Result</span>
-        <span class={`${s().chevron} ${isOpen() ? s().chevronOpen : ''}`}>{'\u25B6'}</span>
+      <div
+        class={s().step}
+        onClick={() => setIsOpen(!isOpen())}
+        style={{ cursor: 'pointer' }}
+      >
+        <span class={`${s().stepPrefix} ${s().stepPrefixToolResult}`}>
+          Result
+        </span>
+        <span class={`${s().chevron} ${isOpen() ? s().chevronOpen : ''}`}>
+          {'\u25B6'}
+        </span>
       </div>
       <div class={`${s().cardBody} ${isOpen() ? s().cardBodyOpen : ''}`}>
         <div class={s().cardBodyInner}>
@@ -313,7 +381,8 @@ export const IterationCard: Component<IterationCardProps> = (props) => {
 
   const iter = () => props.iteration
   const isActive = () => !iter().completedAt
-  const isCompleted = () => !!iter().completedAt && iter().finishReason !== 'error'
+  const isCompleted = () =>
+    !!iter().completedAt && iter().finishReason !== 'error'
   const isError = () => iter().finishReason === 'error'
 
   const duration = () => {
@@ -339,7 +408,10 @@ export const IterationCard: Component<IterationCardProps> = (props) => {
     if (prev.requestId !== iter().requestId) return usage
     return {
       promptTokens: Math.max(0, usage.promptTokens - prev.usage.promptTokens),
-      completionTokens: Math.max(0, usage.completionTokens - prev.usage.completionTokens),
+      completionTokens: Math.max(
+        0,
+        usage.completionTokens - prev.usage.completionTokens,
+      ),
       totalTokens: Math.max(0, usage.totalTokens - prev.usage.totalTokens),
     }
   })
@@ -347,11 +419,16 @@ export const IterationCard: Component<IterationCardProps> = (props) => {
   const finishLabel = () => {
     if (!iter().finishReason) return null
     switch (iter().finishReason) {
-      case 'stop': return 'completed'
-      case 'tool_calls': return 'tool calls'
-      case 'error': return 'error'
-      case 'length': return 'max length'
-      default: return iter().finishReason
+      case 'stop':
+        return 'completed'
+      case 'tool_calls':
+        return 'tool calls'
+      case 'error':
+        return 'error'
+      case 'length':
+        return 'max length'
+      default:
+        return iter().finishReason
     }
   }
 
@@ -409,9 +486,11 @@ export const IterationCard: Component<IterationCardProps> = (props) => {
   const hasConfigChanged = () => {
     const prev = props.previousIteration
     if (!prev) return false
-    return iter().model !== prev.model ||
+    return (
+      iter().model !== prev.model ||
       iter().provider !== prev.provider ||
       JSON.stringify(iter().toolNames) !== JSON.stringify(prev.toolNames)
+    )
   }
 
   const configDiffs = () => {
@@ -419,10 +498,18 @@ export const IterationCard: Component<IterationCardProps> = (props) => {
     if (!prev) return []
     const diffs: Array<{ key: string; from: string; to: string }> = []
     if (iter().model !== prev.model) {
-      diffs.push({ key: 'model', from: prev.model || '(none)', to: iter().model || '(none)' })
+      diffs.push({
+        key: 'model',
+        from: prev.model || '(none)',
+        to: iter().model || '(none)',
+      })
     }
     if (iter().provider !== prev.provider) {
-      diffs.push({ key: 'provider', from: prev.provider || '(none)', to: iter().provider || '(none)' })
+      diffs.push({
+        key: 'provider',
+        from: prev.provider || '(none)',
+        to: iter().provider || '(none)',
+      })
     }
     if (JSON.stringify(iter().toolNames) !== JSON.stringify(prev.toolNames)) {
       diffs.push({
@@ -443,7 +530,10 @@ export const IterationCard: Component<IterationCardProps> = (props) => {
       style={{ 'animation-delay': `${props.index * 60}ms` }}
     >
       {/* Header */}
-      <div class={`${s().iterCardHeader} ${headerAccent()}`} onClick={() => setIsOpen(!isOpen())}>
+      <div
+        class={`${s().iterCardHeader} ${headerAccent()}`}
+        onClick={() => setIsOpen(!isOpen())}
+      >
         <div class={s().cardHeaderContent}>
           <span class={s().iterCardTitle}>{label()}</span>
           {/* Config subtitle — same pattern as user message card */}
@@ -458,7 +548,8 @@ export const IterationCard: Component<IterationCardProps> = (props) => {
             </Show>
             <Show when={systemPrompts().length > 0}>
               <span class={s().subtitleBadge}>
-                {systemPrompts().length} system prompt{systemPrompts().length === 1 ? '' : 's'}
+                {systemPrompts().length} system prompt
+                {systemPrompts().length === 1 ? '' : 's'}
               </span>
             </Show>
             <Show when={hasModelOptions()}>
@@ -469,13 +560,17 @@ export const IterationCard: Component<IterationCardProps> = (props) => {
             </Show>
             <Show when={middlewareTransformCount() > 0}>
               <span class={s().subtitleBadgeWarn}>
-                {middlewareTransformCount()} middleware transform{middlewareTransformCount() === 1 ? '' : 's'}
+                {middlewareTransformCount()} middleware transform
+                {middlewareTransformCount() === 1 ? '' : 's'}
               </span>
             </Show>
             <Show when={hasExpandableConfig()}>
               <span
                 class={s().subtitleExpandToggle}
-                onClick={(e) => { e.stopPropagation(); setConfigExpanded(!configExpanded()) }}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setConfigExpanded(!configExpanded())
+                }}
               >
                 {configExpanded() ? 'hide config' : 'show config'}
               </span>
@@ -484,27 +579,41 @@ export const IterationCard: Component<IterationCardProps> = (props) => {
         </div>
         <div class={s().cardHeaderBadges}>
           <Show when={finishLabel()}>
-            <span class={`${s().badge} ${
-              iter().finishReason === 'stop' ? s().badgeFinishReasonStop :
-              iter().finishReason === 'tool_calls' ? s().badgeFinishReasonToolCalls :
-              iter().finishReason === 'error' ? s().mwBadgeError :
-              s().badgeDuration
-            }`}>
+            <span
+              class={`${s().badge} ${
+                iter().finishReason === 'stop'
+                  ? s().badgeFinishReasonStop
+                  : iter().finishReason === 'tool_calls'
+                    ? s().badgeFinishReasonToolCalls
+                    : iter().finishReason === 'error'
+                      ? s().mwBadgeError
+                      : s().badgeDuration
+              }`}
+            >
               {finishLabel()}
             </span>
           </Show>
           <Show when={totalToolCalls() > 0}>
-            <span class={`${s().badge} ${s().badgeFinishReasonToolCalls}`} title={`${totalToolCalls()} tool ${totalToolCalls() === 1 ? 'call' : 'calls'}`}>
+            <span
+              class={`${s().badge} ${s().badgeFinishReasonToolCalls}`}
+              title={`${totalToolCalls()} tool ${totalToolCalls() === 1 ? 'call' : 'calls'}`}
+            >
               🔧 {totalToolCalls()}
             </span>
           </Show>
           <Show when={duration()}>
-            <span class={`${s().badge} ${s().badgeDuration}`} title={formatDuration(duration())}>
+            <span
+              class={`${s().badge} ${s().badgeDuration}`}
+              title={formatDuration(duration())}
+            >
               ⏱️ {formatDuration(duration())}
             </span>
           </Show>
           <Show when={deltaUsage()}>
-            <span class={`${s().badge} ${s().badgeUsage}`} title={`Prompt: ${deltaUsage()!.promptTokens.toLocaleString()} | Completion: ${deltaUsage()!.completionTokens.toLocaleString()}`}>
+            <span
+              class={`${s().badge} ${s().badgeUsage}`}
+              title={`Prompt: ${deltaUsage()!.promptTokens.toLocaleString()} | Completion: ${deltaUsage()!.completionTokens.toLocaleString()}`}
+            >
               🎯 {deltaUsage()!.totalTokens.toLocaleString()}
             </span>
           </Show>
@@ -518,7 +627,9 @@ export const IterationCard: Component<IterationCardProps> = (props) => {
       </div>
 
       {/* Expandable config panel — between header and steps */}
-      <div class={`${s().configPanelWrapper} ${configExpanded() ? s().configPanelWrapperOpen : ''}`}>
+      <div
+        class={`${s().configPanelWrapper} ${configExpanded() ? s().configPanelWrapperOpen : ''}`}
+      >
         <div class={s().configPanel}>
           <div>
             <Show when={hasConfigChanged()}>
@@ -590,19 +701,39 @@ export const IterationCard: Component<IterationCardProps> = (props) => {
             {(step) => (
               <Switch>
                 <Match when={step().kind === 'middleware'}>
-                  <MiddlewareStep step={step() as Extract<IterationStep, { kind: 'middleware' }>} />
+                  <MiddlewareStep
+                    step={
+                      step() as Extract<IterationStep, { kind: 'middleware' }>
+                    }
+                  />
                 </Match>
                 <Match when={step().kind === 'thinking'}>
-                  <ThinkingStep step={step() as Extract<IterationStep, { kind: 'thinking' }>} />
+                  <ThinkingStep
+                    step={
+                      step() as Extract<IterationStep, { kind: 'thinking' }>
+                    }
+                  />
                 </Match>
                 <Match when={step().kind === 'assistant'}>
-                  <AssistantStep step={step() as Extract<IterationStep, { kind: 'assistant' }>} />
+                  <AssistantStep
+                    step={
+                      step() as Extract<IterationStep, { kind: 'assistant' }>
+                    }
+                  />
                 </Match>
                 <Match when={step().kind === 'tool_call'}>
-                  <ToolCallStep step={step() as Extract<IterationStep, { kind: 'tool_call' }>} />
+                  <ToolCallStep
+                    step={
+                      step() as Extract<IterationStep, { kind: 'tool_call' }>
+                    }
+                  />
                 </Match>
                 <Match when={step().kind === 'tool_result'}>
-                  <ToolResultStep step={step() as Extract<IterationStep, { kind: 'tool_result' }>} />
+                  <ToolResultStep
+                    step={
+                      step() as Extract<IterationStep, { kind: 'tool_result' }>
+                    }
+                  />
                 </Match>
               </Switch>
             )}

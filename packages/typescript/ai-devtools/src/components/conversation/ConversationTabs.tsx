@@ -84,8 +84,7 @@ export const ConversationTabs: Component<ConversationTabsProps> = (props) => {
   const hasMessages = () =>
     !hasIterations() && conv().type === 'client' && conv().messages.length > 0
   const hasChunks = () =>
-    !hasIterations() &&
-    (conv().chunks.length > 0 || conv().type === 'server')
+    !hasIterations() && (conv().chunks.length > 0 || conv().type === 'server')
   const hasSummaries = () => conv().hasSummarize || summariesCount() > 0
   const hasImage = () => conv().hasImage || imageCount() > 0
   const hasSpeech = () => conv().hasSpeech || speechCount() > 0

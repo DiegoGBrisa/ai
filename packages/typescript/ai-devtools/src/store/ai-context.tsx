@@ -571,7 +571,11 @@ export const AIProvider: ParentComponent = (props) => {
       completion += v.completionTokens
     }
     updateConversation(conversationId, {
-      usage: { promptTokens: prompt, completionTokens: completion, totalTokens: prompt + completion },
+      usage: {
+        promptTokens: prompt,
+        completionTokens: completion,
+        totalTokens: prompt + completion,
+      },
     })
   }
 
@@ -746,8 +750,15 @@ export const AIProvider: ParentComponent = (props) => {
 
     cleanupFns.push(
       aiEventClient.on('text:message:created', (e) => {
-        const { clientId, streamId, messageId, role, content, timestamp, requestId } =
-          e.payload
+        const {
+          clientId,
+          streamId,
+          messageId,
+          role,
+          content,
+          timestamp,
+          requestId,
+        } = e.payload
         const conversationId =
           clientId ||
           (streamId ? streamToConversation.get(streamId) : undefined)
@@ -903,7 +914,8 @@ export const AIProvider: ParentComponent = (props) => {
 
     cleanupFns.push(
       aiEventClient.on('text:message:user', (e) => {
-        const { clientId, streamId, messageId, content, timestamp, requestId } = e.payload
+        const { clientId, streamId, messageId, content, timestamp, requestId } =
+          e.payload
         const conversationId =
           clientId ||
           (streamId ? streamToConversation.get(streamId) : undefined)
@@ -1460,7 +1472,11 @@ export const AIProvider: ParentComponent = (props) => {
         }
 
         if (e.payload.usage) {
-          updateConversationUsage(conversationId, e.payload.requestId, e.payload.usage)
+          updateConversationUsage(
+            conversationId,
+            e.payload.requestId,
+            e.payload.usage,
+          )
           updateMessageUsage(
             conversationId,
             e.payload.messageId,
@@ -1495,8 +1511,7 @@ export const AIProvider: ParentComponent = (props) => {
                 iter &&
                 !iter.completedAt &&
                 msgId &&
-                (iter.messageId === msgId ||
-                  iter.messageIds?.includes(msgId))
+                (iter.messageId === msgId || iter.messageIds.includes(msgId))
               ) {
                 const iterIdx = i
                 setState(
@@ -1508,8 +1523,7 @@ export const AIProvider: ParentComponent = (props) => {
                     it.completedAt = e.payload.timestamp
                     if (!it.finishReason)
                       it.finishReason = e.payload.finishReason || undefined
-                    if (e.payload.usage && !it.usage)
-                      it.usage = e.payload.usage
+                    if (e.payload.usage && !it.usage) it.usage = e.payload.usage
                   }),
                 )
                 break
@@ -1561,8 +1575,12 @@ export const AIProvider: ParentComponent = (props) => {
             const iter = convForError.iterations[i]
             if (iter && !iter.completedAt) {
               // Scope to matching requestId or messageId when available
-              const matchesRequest = !errorRequestId || iter.requestId === errorRequestId
-              const matchesMessage = !errorMsgId || iter.messageId === errorMsgId || iter.messageIds?.includes(errorMsgId)
+              const matchesRequest =
+                !errorRequestId || iter.requestId === errorRequestId
+              const matchesMessage =
+                !errorMsgId ||
+                iter.messageId === errorMsgId ||
+                iter.messageIds.includes(errorMsgId)
               if (matchesRequest || matchesMessage) {
                 setState(
                   'conversations',
@@ -1733,34 +1751,32 @@ export const AIProvider: ParentComponent = (props) => {
           // Failsafe: mark any remaining active iterations FOR THIS REQUEST as completed.
           // Only scope to this requestId to avoid touching other requests' iterations.
           const conv = state.conversations[conversationId]
-          if (conv) {
-            for (let i = 0; i < conv.iterations.length; i++) {
-              const iter = conv.iterations[i]
-              if (
-                iter &&
-                !iter.completedAt &&
-                (!requestId || iter.requestId === requestId)
-              ) {
-                const iterIdx = i
-                setState(
-                  'conversations',
-                  conversationId,
-                  'iterations',
-                  iterIdx,
-                  produce((it: Iteration) => {
-                    it.completedAt = e.payload.timestamp
-                    if (!it.finishReason) {
-                      it.finishReason =
-                        e.payload.finishReason || 'stop'
-                    }
-                    if (!it.usage && usage) {
-                      it.usage = usage
-                    }
-                  }),
-                )
-              }
+          for (let i = 0; i < conv.iterations.length; i++) {
+            const iter = conv.iterations[i]
+            if (
+              iter &&
+              !iter.completedAt &&
+              (!requestId || iter.requestId === requestId)
+            ) {
+              const iterIdx = i
+              setState(
+                'conversations',
+                conversationId,
+                'iterations',
+                iterIdx,
+                produce((it: Iteration) => {
+                  it.completedAt = e.payload.timestamp
+                  if (!it.finishReason) {
+                    it.finishReason = e.payload.finishReason || 'stop'
+                  }
+                  if (!it.usage && usage) {
+                    it.usage = usage
+                  }
+                }),
+              )
             }
           }
+         
         }
       }),
     )
@@ -1794,32 +1810,29 @@ export const AIProvider: ParentComponent = (props) => {
         // iterations for the same request must have ended (with tool_calls).
         // This covers edge cases where text:chunk:done didn't match by messageId.
         const convForFailsafe = state.conversations[conversationId]
-        if (convForFailsafe) {
-          for (let i = 0; i < convForFailsafe.iterations.length; i++) {
-            const iter = convForFailsafe.iterations[i]
-            if (iter && !iter.completedAt && iter.requestId === requestId) {
-              setState(
-                'conversations',
-                conversationId,
-                'iterations',
-                i,
-                produce((it: Iteration) => {
-                  it.completedAt = e.payload.timestamp
-                  if (!it.finishReason) it.finishReason = 'tool_calls'
-                }),
-              )
-            }
+        for (let i = 0; i < convForFailsafe.iterations.length; i++) {
+          const iter = convForFailsafe.iterations[i]
+          if (iter && !iter.completedAt && iter.requestId === requestId) {
+            setState(
+              'conversations',
+              conversationId,
+              'iterations',
+              i,
+              produce((it: Iteration) => {
+                it.completedAt = e.payload.timestamp
+                if (!it.finishReason) it.finishReason = 'tool_calls'
+              }),
+            )
           }
         }
+       
 
         // Guard against duplicate iteration events (e.g. middleware registered twice)
         const existingConv = state.conversations[conversationId]
         if (
-          existingConv &&
+          
           existingConv.iterations.some(
-            (it) =>
-              it.index === iteration &&
-              it.requestId === requestId,
+            (it) => it.index === iteration && it.requestId === requestId,
           )
         ) {
           return

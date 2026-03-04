@@ -1920,8 +1920,13 @@ const stylesFactory = (theme: 'light' | 'dark') => {
         animation: iterActivePulse 2s ease-in-out infinite;
 
         @keyframes iterActivePulse {
-          0%, 100% { border-left-color: ${t(colors.blue[400], colors.blue[500])}; }
-          50% { border-left-color: ${t(colors.blue[200], colors.blue[700])}; }
+          0%,
+          100% {
+            border-left-color: ${t(colors.blue[400], colors.blue[500])};
+          }
+          50% {
+            border-left-color: ${t(colors.blue[200], colors.blue[700])};
+          }
         }
       `,
       iterCardTitle: css`
