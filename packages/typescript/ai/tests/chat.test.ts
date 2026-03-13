@@ -860,8 +860,7 @@ describe('chat()', () => {
 
       const ends = chunks.filter(
         (c) =>
-          c.type === 'TOOL_CALL_END' &&
-          (c as any).toolCallId === 'call_server',
+          c.type === 'TOOL_CALL_END' && (c as any).toolCallId === 'call_server',
       )
       expect(ends).toHaveLength(1)
 
