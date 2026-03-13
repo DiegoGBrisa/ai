@@ -890,9 +890,7 @@ describe('useChat', () => {
 
         // The adapter should receive the previous conversation + new message.
         const sentMessages = connectSpy.mock.calls[0]![0] as Array<any>
-        const userMessages = sentMessages.filter(
-          (m: any) => m.role === 'user',
-        )
+        const userMessages = sentMessages.filter((m: any) => m.role === 'user')
         expect(userMessages.length).toBeGreaterThanOrEqual(2)
       })
     })
